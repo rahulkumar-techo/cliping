@@ -56,9 +56,10 @@ def get_video_info(url: str) -> dict:
 
     return {"title": "YouTube Video", "duration": 120, "width": 1280, "height": 720}
 
-def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 120, min_disk_gb: float = 8.0) -> str:
+def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 120, min_disk_gb: float = 8.0, progress_callback=None) -> str:
     """
     Downloads YouTube video using yt-dlp Python API with FFmpeg merging.
+    Emits granular real-time download progress (percentage, MB, speed).
     Optimized for low disk: downloads 720p/1080p stream to avoid 4K overhead.
     """
     if not validate_youtube_url(url):
@@ -78,6 +79,20 @@ def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 
 
     ffmpeg_exe = get_ffmpeg_path()
 
+    def _ydl_hook(d):
+        if d.get("status") == "downloading" and progress_callback:
+            tot = d.get("total_bytes") or d.get("total_bytes_estimate") or 0
+            dl = d.get("downloaded_bytes") or 0
+            spd = d.get("speed") or 0
+            if tot > 0:
+                pct = int((dl / tot) * 100)
+                dl_mb = dl / (1024 * 1024)
+                tot_mb = tot / (1024 * 1024)
+                spd_mb = spd / (1024 * 1024)
+                progress_callback(pct, f"{dl_mb:.1f}/{tot_mb:.1f} MB ({spd_mb:.1f} MB/s)")
+        elif d.get("status") == "finished" and progress_callback:
+            progress_callback(100, "Merging audio and video streams...")
+
     # Prefer native Python yt_dlp API for maximum reliability
     try:
         import yt_dlp
@@ -85,8 +100,9 @@ def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 
             "format": "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080]/best",
             "outtmpl": output_path.replace(".mp4", "") + ".%(ext)s",
             "merge_output_format": "mp4",
-            "quiet": False,
-            "no_warnings": False,
+            "progress_hooks": [_ydl_hook],
+            "quiet": True,
+            "no_warnings": True,
             "ffmpeg_location": ffmpeg_exe if os.path.exists(ffmpeg_exe) else None
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

@@ -48,72 +48,173 @@
             </div>
             <div class="stages-vertical-list" id="stagesList">
                 <div class="stage-item" data-stage="Validating URL">
-                    <span class="stage-num">1</span>
-                    <span class="stage-name">Validating URL</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">1</span>
+                        <span class="stage-name">Validating URL & Disk</span>
+                        <span class="stage-tag" id="tag-Validating-URL">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Validating-URL"><div class="stage-track-fill" id="fill-Validating-URL"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Validating-URL"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Downloading">
-                    <span class="stage-num">2</span>
-                    <span class="stage-name">Downloading (1080p Stream)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">2</span>
+                        <span class="stage-name">Downloading Stream</span>
+                        <span class="stage-tag" id="tag-Downloading">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Downloading"><div class="stage-track-fill" id="fill-Downloading"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Downloading"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Extracting audio">
-                    <span class="stage-num">3</span>
-                    <span class="stage-name">Extracting 16kHz Audio</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">3</span>
+                        <span class="stage-name">Extracting 16kHz Audio</span>
+                        <span class="stage-tag" id="tag-Extracting-audio">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Extracting-audio"><div class="stage-track-fill" id="fill-Extracting-audio"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Extracting-audio"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Creating analysis proxy">
-                    <span class="stage-num">4</span>
-                    <span class="stage-name">Creating 640x360 Proxy</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">4</span>
+                        <span class="stage-name">Keyframe Analysis Proxy</span>
+                        <span class="stage-tag" id="tag-Creating-analysis-proxy">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Creating-analysis-proxy"><div class="stage-track-fill" id="fill-Creating-analysis-proxy"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Creating-analysis-proxy"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Transcribing">
-                    <span class="stage-num">5</span>
-                    <span class="stage-name">Transcribing (Whisper)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">5</span>
+                        <span class="stage-name">Transcribing (Whisper)</span>
+                        <span class="stage-tag" id="tag-Transcribing">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Transcribing"><div class="stage-track-fill" id="fill-Transcribing"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Transcribing"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Detecting scenes">
-                    <span class="stage-num">6</span>
-                    <span class="stage-name">Detecting Scene Cuts</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">6</span>
+                        <span class="stage-name">Detecting Scene Cuts</span>
+                        <span class="stage-tag" id="tag-Detecting-scenes">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Detecting-scenes"><div class="stage-track-fill" id="fill-Detecting-scenes"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Detecting-scenes"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Analyzing audio">
-                    <span class="stage-num">7</span>
-                    <span class="stage-name">Analyzing Energy & Peaks</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">7</span>
+                        <span class="stage-name">Z-Score Energy Peaks</span>
+                        <span class="stage-tag" id="tag-Analyzing-audio">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Analyzing-audio"><div class="stage-track-fill" id="fill-Analyzing-audio"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Analyzing-audio"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Generating candidates">
-                    <span class="stage-num">8</span>
-                    <span class="stage-name">Generating Candidates</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">8</span>
+                        <span class="stage-name">Generating Candidates</span>
+                        <span class="stage-tag" id="tag-Generating-candidates">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Generating-candidates"><div class="stage-track-fill" id="fill-Generating-candidates"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Generating-candidates"></div>
                 </div>
+
                 <div class="stage-item" data-stage="AI ranking">
-                    <span class="stage-num">9</span>
-                    <span class="stage-name">AI Ranking (Gemini)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">9</span>
+                        <span class="stage-name">AI Climax Ranking</span>
+                        <span class="stage-tag" id="tag-AI-ranking">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-AI-ranking"><div class="stage-track-fill" id="fill-AI-ranking"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-AI-ranking"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Detecting subjects">
-                    <span class="stage-num">10</span>
-                    <span class="stage-name">Detecting Subjects (YOLO)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">10</span>
+                        <span class="stage-name">Detecting Subjects (YOLO)</span>
+                        <span class="stage-tag" id="tag-Detecting-subjects">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Detecting-subjects"><div class="stage-track-fill" id="fill-Detecting-subjects"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Detecting-subjects"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Tracking subject">
-                    <span class="stage-num">11</span>
-                    <span class="stage-name">Tracking Subject (ByteTrack)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">11</span>
+                        <span class="stage-name">Camera Focus Trajectory</span>
+                        <span class="stage-tag" id="tag-Tracking-subject">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Tracking-subject"><div class="stage-track-fill" id="fill-Tracking-subject"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Tracking-subject"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Smart reframing">
-                    <span class="stage-num">12</span>
-                    <span class="stage-name">Smart 9:16 Reframing</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">12</span>
+                        <span class="stage-name">Dynamic 9:16 Safe Margins</span>
+                        <span class="stage-tag" id="tag-Smart-reframing">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Smart-reframing"><div class="stage-track-fill" id="fill-Smart-reframing"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Smart-reframing"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Generating captions">
-                    <span class="stage-num">13</span>
-                    <span class="stage-name">Generating ASS Captions</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">13</span>
+                        <span class="stage-name">Mobile Safe Captions</span>
+                        <span class="stage-tag" id="tag-Generating-captions">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Generating-captions"><div class="stage-track-fill" id="fill-Generating-captions"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Generating-captions"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Rendering">
-                    <span class="stage-num">14</span>
-                    <span class="stage-name">FFmpeg 1080x1920 Render</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">14</span>
+                        <span class="stage-name">FFmpeg 1080x1920 Render</span>
+                        <span class="stage-tag" id="tag-Rendering">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Rendering"><div class="stage-track-fill" id="fill-Rendering"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Rendering"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Uploading">
-                    <span class="stage-num">15</span>
-                    <span class="stage-name">Publishing (Shorts / Reels)</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">15</span>
+                        <span class="stage-name">Publishing (Shorts / Reels)</span>
+                        <span class="stage-tag" id="tag-Uploading">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Uploading"><div class="stage-track-fill" id="fill-Uploading"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Uploading"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Cleanup">
-                    <span class="stage-num">16</span>
-                    <span class="stage-name">Cleaning Temp Storage</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">16</span>
+                        <span class="stage-name">Storage Reclamation</span>
+                        <span class="stage-tag" id="tag-Cleanup">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Cleanup"><div class="stage-track-fill" id="fill-Cleanup"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Cleanup"></div>
                 </div>
+
                 <div class="stage-item" data-stage="Completed">
-                    <span class="stage-num">17</span>
-                    <span class="stage-name">Completed</span>
+                    <div class="stage-top-row">
+                        <span class="stage-num">17</span>
+                        <span class="stage-name">Completed</span>
+                        <span class="stage-tag" id="tag-Completed">Pending</span>
+                    </div>
+                    <div class="stage-track hidden" id="track-Completed"><div class="stage-track-fill" id="fill-Completed"></div></div>
+                    <div class="stage-subdetail hidden" id="detail-Completed"></div>
                 </div>
             </div>
         </div>

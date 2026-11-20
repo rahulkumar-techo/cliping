@@ -96,6 +96,18 @@ func (h *Hub) BroadcastProgress(jobID string, progress int, stage string) {
 	})
 }
 
+// BroadcastStepProgress emits granular sub-progress for an individual stage.
+func (h *Hub) BroadcastStepProgress(jobID, stage string, percent int, detail string) {
+	h.Broadcast(jobID, Event{
+		Type: "step_progress",
+		Data: map[string]interface{}{
+			"stage":   stage,
+			"percent": percent,
+			"detail":  detail,
+		},
+	})
+}
+
 // BroadcastLog emits a structured log message.
 func (h *Hub) BroadcastLog(jobID, stage, level, message string) {
 	formatted := fmt.Sprintf("[%s] [job=%s] [stage=%s] %s", level, jobID, stage, message)

@@ -24,6 +24,37 @@ function initStatsPoller() {
             }
         } catch (_) {}
     };
+    const cleanBtn = document.getElementById("headerCleanBtn");
+    if (cleanBtn) {
+        cleanBtn.addEventListener("click", async () => {
+            if (!confirm("Reclaim disk space by purging all temporary files across jobs?")) return;
+            const orig = cleanBtn.textContent;
+            cleanBtn.disabled = true;
+            cleanBtn.textContent = "🧹 Cleaning...";
+            try {
+                const res = await fetch("/api/cleanup", { method: "POST" });
+                const data = await res.json();
+                if (res.ok) {
+                    cleanBtn.textContent = `✓ Freed ${data.freed_mb} MB!`;
+                    cleanBtn.style.color = "var(--accent-primary)";
+                    setTimeout(() => {
+                        cleanBtn.textContent = orig;
+                        cleanBtn.style.color = "";
+                        cleanBtn.disabled = false;
+                    }, 3000);
+                } else {
+                    alert(data.error || "Cleanup failed");
+                    cleanBtn.textContent = orig;
+                    cleanBtn.disabled = false;
+                }
+            } catch (err) {
+                alert(`Cleanup error: ${err.message}`);
+                cleanBtn.textContent = orig;
+                cleanBtn.disabled = false;
+            }
+        });
+    }
+
     updateStats();
     setInterval(updateStats, 10000);
 }
@@ -201,15 +232,36 @@ function initProcessingPage() {
         let reached = true;
         stagesList.forEach(item => {
             const stageName = item.dataset.stage;
+            const slug = stageName.replace(/\s+/g, "-");
+            const tag = document.getElementById(`tag-${slug}`);
+            const track = document.getElementById(`track-${slug}`);
+            const fill = document.getElementById(`fill-${slug}`);
+
             if (stageName === currentStage) {
                 item.classList.add("active");
                 item.classList.remove("completed");
+                if (tag) {
+                    tag.textContent = "Running";
+                    tag.className = "stage-tag active";
+                }
+                if (track) track.classList.remove("hidden");
                 reached = false;
             } else if (reached) {
                 item.classList.add("completed");
                 item.classList.remove("active");
+                if (tag) {
+                    tag.textContent = "✓ Done";
+                    tag.className = "stage-tag completed";
+                }
+                if (track) track.classList.remove("hidden");
+                if (fill) fill.style.width = "100%";
             } else {
                 item.classList.remove("completed", "active");
+                if (tag) {
+                    tag.textContent = "Pending";
+                    tag.className = "stage-tag pending";
+                }
+                if (track) track.classList.add("hidden");
             }
         });
     };
@@ -290,6 +342,29 @@ function initProcessingPage() {
             const data = JSON.parse(e.data);
             if (percentText) percentText.textContent = `${data.progress}%`;
             if (progressBar) progressBar.style.width = `${data.progress}%`;
+        });
+
+        eventSource.addEventListener("step_progress", (e) => {
+            const data = JSON.parse(e.data);
+            const slug = data.stage.replace(/\s+/g, "-");
+            const tag = document.getElementById(`tag-${slug}`);
+            const track = document.getElementById(`track-${slug}`);
+            const fill = document.getElementById(`fill-${slug}`);
+            const detail = document.getElementById(`detail-${slug}`);
+
+            if (tag) {
+                tag.textContent = `${data.percent}%`;
+                tag.className = "stage-tag active";
+            }
+            if (track) track.classList.remove("hidden");
+            if (fill) fill.style.width = `${data.percent}%`;
+            if (detail && data.detail) {
+                detail.textContent = data.detail;
+                detail.classList.remove("hidden");
+            }
+            if (stageText && data.detail) {
+                stageText.textContent = `${data.stage} • ${data.detail}`;
+            }
         });
 
         eventSource.addEventListener("log", (e) => {

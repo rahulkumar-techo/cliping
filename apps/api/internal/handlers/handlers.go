@@ -75,6 +75,7 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /api/settings", s.handleGetSettings)
 	mux.HandleFunc("PUT /api/settings", s.handleUpdateSettings)
+	mux.HandleFunc("POST /api/cleanup", s.handleManualCleanup)
 
 	mux.HandleFunc("GET /health", s.handleHealth)
 	mux.HandleFunc("GET /ready", s.handleReady)
@@ -539,6 +540,22 @@ func (s *Server) handleUpdateSettings(w http.ResponseWriter, r *http.Request) {
 
 	jsonResponse(w, http.StatusOK, map[string]string{
 		"message": "Settings updated successfully",
+	})
+}
+
+func (s *Server) handleManualCleanup(w http.ResponseWriter, r *http.Request) {
+	freedBytes, count, err := s.cleaner.CleanAllTemp()
+	if err != nil {
+		jsonError(w, fmt.Sprintf("Cleanup failed: %v", err), http.StatusInternalServerError)
+		return
+	}
+	freedMB := float64(freedBytes) / (1024 * 1024)
+	jsonResponse(w, http.StatusOK, map[string]interface{}{
+		"success":      true,
+		"freed_bytes":  freedBytes,
+		"freed_mb":     fmt.Sprintf("%.1f", freedMB),
+		"jobs_cleaned": count,
+		"message":      fmt.Sprintf("Reclaimed %.1f MB disk space across %d jobs.", freedMB, count),
 	})
 }
 

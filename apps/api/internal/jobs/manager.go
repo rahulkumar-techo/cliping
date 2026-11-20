@@ -29,6 +29,8 @@ type WorkerEvent struct {
 	Event    string         `json:"event"`
 	Stage    string         `json:"stage,omitempty"`
 	Progress int            `json:"progress,omitempty"`
+	Percent  int            `json:"percent,omitempty"`
+	Detail   string         `json:"detail,omitempty"`
 	Level    string         `json:"level,omitempty"`
 	Message  string         `json:"message,omitempty"`
 	Code     string         `json:"code,omitempty"`
@@ -255,6 +257,8 @@ func (m *Manager) handleWorkerEvent(jobID string, ev *WorkerEvent) {
 	case "progress":
 		_ = m.db.UpdateJobStatus(jobID, "", ev.Stage, ev.Progress, nil, nil)
 		m.hub.BroadcastProgress(jobID, ev.Progress, ev.Stage)
+	case "step_progress":
+		m.hub.BroadcastStepProgress(jobID, ev.Stage, ev.Percent, ev.Detail)
 	case "log":
 		m.hub.BroadcastLog(jobID, ev.Stage, ev.Level, ev.Message)
 	case "clip":

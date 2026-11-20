@@ -58,7 +58,9 @@ class TestAll17StepsPipeline(unittest.TestCase):
         # Monkey-patch download_youtube_video so it copies our pre-generated source.mp4 to destination
         import pipeline
         orig_download = pipeline.download_youtube_video
-        def mock_download(url, out):
+        def mock_download(url, out, **kwargs):
+            if "progress_callback" in kwargs and kwargs["progress_callback"]:
+                kwargs["progress_callback"](100, "1.9/1.9 MB (15 MB/s)")
             shutil.copyfile(self.source_mp4, out)
             return out
         pipeline.download_youtube_video = mock_download
