@@ -24,6 +24,22 @@ def check_disk_space_gb(path: str) -> float:
     except Exception:
         return 32.0
 
+def _find_cookie_file():
+    """Finds cookies.txt file if present in env or common project paths."""
+    env_cookie = os.environ.get("YOUTUBE_COOKIES_PATH", "")
+    if env_cookie and os.path.exists(env_cookie):
+        return env_cookie
+    candidates = [
+        "cookies.txt",
+        "data/cookies.txt",
+        "storage/cookies.txt",
+        os.path.join(os.path.dirname(__file__), "../../../cookies.txt"),
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return os.path.abspath(c)
+    return None
+
 def validate_youtube_url(url: str) -> bool:
     """Validates that URL is a recognized YouTube video or Shorts link."""
     pattern = r"^(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/|youtube\.com/shorts/)([a-zA-Z0-9_-]{11})"
@@ -31,7 +47,9 @@ def validate_youtube_url(url: str) -> bool:
 
 def get_video_info(url: str) -> dict:
     """Fetches video metadata using yt-dlp Python library or CLI."""
-    # Method 1: Direct Python yt_dlp library
+    cookie_path = _find_cookie_file()
+
+    # Method 1: Direct Python yt_dlp library with mobile player_client to bypass bot challenges
     try:
         import yt_dlp
         ydl_opts = {
@@ -39,14 +57,30 @@ def get_video_info(url: str) -> dict:
             "no_warnings": True,
             "skip_download": True,
             "extract_flat": False,
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["android", "ios", "mweb"]
+                }
+            }
         }
+        if cookie_path:
+            ydl_opts["cookiefile"] = cookie_path
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             return ydl.extract_info(url, download=False)
     except Exception:
         pass
 
     # Method 2: CLI subprocess
-    cmd = ["yt-dlp", "--dump-json", "--no-playlist", "--skip-download", url]
+    cmd = [
+        "yt-dlp",
+        "--dump-json",
+        "--no-playlist",
+        "--skip-download",
+        "--extractor-args", "youtube:player_client=android,ios,mweb",
+        url
+    ]
+    if cookie_path:
+        cmd.extend(["--cookies", cookie_path])
     try:
         result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=30)
         if result.returncode == 0:
@@ -94,6 +128,7 @@ def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 
             progress_callback(100, "Merging audio and video streams...")
 
     # Prefer native Python yt_dlp API for maximum reliability
+    cookie_path = _find_cookie_file()
     try:
         import yt_dlp
         ydl_opts = {
@@ -103,8 +138,15 @@ def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 
             "progress_hooks": [_ydl_hook],
             "quiet": True,
             "no_warnings": True,
-            "ffmpeg_location": ffmpeg_exe if os.path.exists(ffmpeg_exe) else None
+            "ffmpeg_location": ffmpeg_exe if os.path.exists(ffmpeg_exe) else None,
+            "extractor_args": {
+                "youtube": {
+                    "player_client": ["android", "ios", "mweb"]
+                }
+            }
         }
+        if cookie_path:
+            ydl_opts["cookiefile"] = cookie_path
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
@@ -131,17 +173,28 @@ def download_youtube_video(url: str, output_path: str, max_duration_mins: int = 
         "-f", format_spec,
         "--merge-output-format", "mp4",
         "--no-playlist",
+        "--extractor-args", "youtube:player_client=android,ios,mweb",
         "-o", output_path,
         url
     ]
+    if cookie_path:
+        cmd.extend(["--cookies", cookie_path])
     if os.path.exists(ffmpeg_exe):
         cmd.extend(["--ffmpeg-location", ffmpeg_exe])
 
     try:
         proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=600)
         if proc.returncode != 0 and not os.path.exists(output_path):
-            # Fallback simple format
-            cmd_fallback = ["yt-dlp", "-f", "best", "-o", output_path, url]
+            # Fallback simple format with extractor args
+            cmd_fallback = [
+                "yt-dlp",
+                "-f", "best",
+                "--extractor-args", "youtube:player_client=android,ios,mweb",
+                "-o", output_path,
+                url
+            ]
+            if cookie_path:
+                cmd_fallback.extend(["--cookies", cookie_path])
             if os.path.exists(ffmpeg_exe):
                 cmd_fallback.extend(["--ffmpeg-location", ffmpeg_exe])
             proc_fb = subprocess.run(cmd_fallback, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=300)

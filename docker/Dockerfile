@@ -11,12 +11,13 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /app/api_server ./cmd/main.go
 # Stage 2: Runtime image with Python 3.12 and FFmpeg
 FROM python:3.12-slim-bookworm
 
-# Install FFmpeg and curl
+# Install FFmpeg, sqlite3, curl, ca-certificates, and nodejs (for yt-dlp JavaScript extraction)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     sqlite3 \
     curl \
     ca-certificates \
+    nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
