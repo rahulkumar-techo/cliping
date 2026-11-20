@@ -11,6 +11,7 @@ type Config struct {
 	RepoRoot                  string
 	AppEnv                    string
 	AppPort                   string
+	AppBaseURL                string
 	DatabasePath              string
 	StoragePath               string
 	MaxConcurrentJobs         int
@@ -24,6 +25,7 @@ type Config struct {
 	GeminiModel               string
 	YouTubeClientID           string
 	YouTubeClientSecret       string
+	YouTubeRedirectURI        string
 	InstagramAppID            string
 	InstagramAppSecret        string
 	JobTTLHours               int
@@ -78,10 +80,17 @@ func Load() *Config {
 	}
 	pythonPath := getEnv("PYTHON_PATH", defaultPython)
 
+	port := getEnv("APP_PORT", "8080")
+	defaultBaseURL := "http://localhost:" + port
+	baseURL := getEnv("APP_BASE_URL", defaultBaseURL)
+	defaultRedirect := baseURL + "/oauth2callback"
+	redirectURI := getEnv("YOUTUBE_REDIRECT_URI", defaultRedirect)
+
 	return &Config{
 		RepoRoot:                 root,
 		AppEnv:                   getEnv("APP_ENV", "development"),
-		AppPort:                  getEnv("APP_PORT", "8080"),
+		AppPort:                  port,
+		AppBaseURL:               baseURL,
 		DatabasePath:             dbPath,
 		StoragePath:              storage,
 		MaxConcurrentJobs:        getEnvInt("MAX_CONCURRENT_JOBS", 1),
@@ -95,6 +104,7 @@ func Load() *Config {
 		GeminiModel:              getEnv("GEMINI_MODEL", "gemini-2.5-flash"),
 		YouTubeClientID:          getEnv("YOUTUBE_CLIENT_ID", ""),
 		YouTubeClientSecret:      getEnv("YOUTUBE_CLIENT_SECRET", ""),
+		YouTubeRedirectURI:       redirectURI,
 		InstagramAppID:           getEnv("INSTAGRAM_APP_ID", ""),
 		InstagramAppSecret:       getEnv("INSTAGRAM_APP_SECRET", ""),
 		JobTTLHours:              getEnvInt("JOB_TTL_HOURS", 12),

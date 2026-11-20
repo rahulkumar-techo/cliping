@@ -9,7 +9,8 @@ def publish_to_youtube_shorts(
     title: str = "Amazing AI Short #Shorts",
     description: str = "Generated automatically by ClipCraft AI #Shorts #Reels",
     client_id: str = "",
-    client_secret: str = ""
+    client_secret: str = "",
+    redirect_uri: str = ""
 ) -> Dict[str, Any]:
     """
     Publishes clip as YouTube Short using YouTube Data API v3.
@@ -17,6 +18,12 @@ def publish_to_youtube_shorts(
     """
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video clip not found at {video_path}")
+
+    # Resolve dynamic credentials & redirect URI from environment if not explicitly passed
+    client_id = client_id or os.environ.get("YOUTUBE_CLIENT_ID", "")
+    client_secret = client_secret or os.environ.get("YOUTUBE_CLIENT_SECRET", "")
+    base_url = os.environ.get("APP_BASE_URL", "http://localhost:8080").rstrip("/")
+    redirect_uri = redirect_uri or os.environ.get("YOUTUBE_REDIRECT_URI", f"{base_url}/oauth2callback")
 
     # Ensure #Shorts tag in title
     if "#Shorts" not in title and "#shorts" not in title:

@@ -79,6 +79,7 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 
 	mux.HandleFunc("GET /health", s.handleHealth)
 	mux.HandleFunc("GET /ready", s.handleReady)
+	mux.HandleFunc("GET /oauth2callback", s.handleOAuth2Callback)
 }
 
 func (s *Server) render(w http.ResponseWriter, templateName string, data map[string]interface{}) {
@@ -580,6 +581,22 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, http.StatusOK, map[string]string{"status": "ready"})
+}
+
+func (s *Server) handleOAuth2Callback(w http.ResponseWriter, r *http.Request) {
+	code := r.URL.Query().Get("code")
+	errParam := r.URL.Query().Get("error")
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if errParam != "" {
+		fmt.Fprintf(w, "<!DOCTYPE html><html><body style='background:#0f172a;color:#f87171;font-family:sans-serif;padding:40px;text-align:center;'><h2>OAuth Authorization Failed</h2><p>%s</p><a href='/settings' style='color:#38bdf8;'>Back to Settings</a></body></html>", errParam)
+		return
+	}
+	if code != "" {
+		fmt.Fprintf(w, "<!DOCTYPE html><html><body style='background:#0f172a;color:#4ade80;font-family:sans-serif;padding:40px;text-align:center;'><h2>Google OAuth Authorized Successfully!</h2><p>Authentication token received. You may close this tab.</p><script>setTimeout(() => window.close(), 3000);</script></body></html>")
+		return
+	}
+	http.Redirect(w, r, "/settings", http.StatusFound)
 }
 
 func jsonResponse(w http.ResponseWriter, status int, data interface{}) {
