@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 )
@@ -70,15 +71,7 @@ func Load() *Config {
 		workerScript = filepath.Join(root, workerScript)
 	}
 
-	defaultPython := "python"
-	venvWin := filepath.Join(root, "apps", "worker", "venv", "Scripts", "python.exe")
-	venvUnix := filepath.Join(root, "apps", "worker", "venv", "bin", "python")
-	if _, err := os.Stat(venvWin); err == nil {
-		defaultPython = venvWin
-	} else if _, err := os.Stat(venvUnix); err == nil {
-		defaultPython = venvUnix
-	}
-	pythonPath := getEnv("PYTHON_PATH", defaultPython)
+	pythonPath := resolvePythonPath(root, os.Getenv("PYTHON_PATH"))
 
 	port := getEnv("APP_PORT", "8080")
 	defaultBaseURL := "http://localhost:" + port
@@ -136,4 +129,44 @@ func getEnvInt64(key string, defaultVal int64) int64 {
 		}
 	}
 	return defaultVal
+}
+
+// resolvePythonPath dynamically finds an existing python executable across Windows, Linux, and Docker/Codespaces.
+func resolvePythonPath(root, configured string) string {
+	// 1. If user explicitly provided a path, check if it actually exists on this host
+	if configured != "" {
+		target := configured
+		if !filepath.IsAbs(target) {
+			target = filepath.Join(root, target)
+		}
+		if _, err := os.Stat(target); err == nil {
+			return target
+		}
+		// Also check if it's a binary name in system PATH (e.g. "python3", "python")
+		if p, err := exec.LookPath(configured); err == nil {
+			return p
+		}
+	}
+
+	// 2. Check virtual environment locations (Linux venv vs Windows venv)
+	candidates := []string{
+		filepath.Join(root, "apps", "worker", "venv", "bin", "python"),
+		filepath.Join(root, "apps", "worker", "venv", "bin", "python3"),
+		filepath.Join(root, "apps", "worker", "venv", "Scripts", "python.exe"),
+	}
+	for _, c := range candidates {
+		if _, err := os.Stat(c); err == nil {
+			return c
+		}
+	}
+
+	// 3. Fallback to system Python binaries
+	if p3, err := exec.LookPath("python3"); err == nil {
+		return p3
+	}
+	if p, err := exec.LookPath("python"); err == nil {
+		return p
+	}
+
+	return "python3"
 }
