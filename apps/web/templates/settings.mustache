@@ -1,0 +1,82 @@
+<section class="card settings-card">
+    <div class="card-header">
+        <h2>System Settings & API Keys</h2>
+        <p class="subtitle">Configure AI models, storage budgets, and social platform publishing credentials.</p>
+    </div>
+
+    <form id="settingsForm" class="settings-form">
+        <div class="settings-group">
+            <h3>🤖 AI Reasoning (Gemini)</h3>
+            <div class="form-group">
+                <label for="geminiApiKey" class="form-label">Gemini API Key</label>
+                <input type="password" id="geminiApiKey" name="gemini_api_key" class="form-control" value="{{config.GeminiAPIKey}}" placeholder="AIzaSy...">
+                <span class="field-help">If empty or quota-exceeded, system falls back automatically to deterministic local scoring.</span>
+            </div>
+            <div class="form-group">
+                <label for="geminiModel" class="form-label">Gemini Model</label>
+                <input type="text" id="geminiModel" name="gemini_model" class="form-control" value="{{config.GeminiModel}}" placeholder="gemini-2.5-flash">
+                <span class="field-help">Default: <code>gemini-2.5-flash</code>. Configurable through environment variable or here.</span>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h3>🎙 Local AI Models (Low CPU / Low RAM)</h3>
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="whisperModel" class="form-label">Whisper Speech-to-Text Model</label>
+                    <input type="text" id="whisperModel" name="whisper_model" class="form-control" value="{{config.WhisperModel}}" placeholder="base">
+                    <span class="field-help">Recommended for 8GB RAM: <code>base</code> or <code>small</code>. Lazy loaded & freed immediately.</span>
+                </div>
+                <div class="form-group col-half">
+                    <label for="yoloModel" class="form-label">YOLO Tracking Model</label>
+                    <input type="text" id="yoloModel" name="yolo_model" class="form-control" value="{{config.YoloModel}}" placeholder="yolov8n.pt">
+                    <span class="field-help">Recommended: <code>yolov8n.pt</code> (nano). Only loaded for shortlisted clips.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h3>📦 Resource & Storage Budget</h3>
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="maxDuration" class="form-label">Max Video Duration (Minutes)</label>
+                    <input type="number" id="maxDuration" name="max_source_duration" class="form-control" value="{{config.MaxSourceDurationMinutes}}">
+                </div>
+                <div class="form-group col-half">
+                    <label for="jobTtl" class="form-label">Job Cleanup TTL (Hours)</label>
+                    <input type="number" id="jobTtl" name="job_ttl_hours" class="form-control" value="{{config.JobTTLHours}}">
+                    <span class="field-help">Temporary files and expired jobs are deleted after this duration.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-group">
+            <h3>🌐 Publishing Credentials</h3>
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="ytClientId" class="form-label">YouTube Client ID</label>
+                    <input type="text" id="ytClientId" name="youtube_client_id" class="form-control" value="{{config.YouTubeClientID}}" placeholder="OAuth Client ID">
+                </div>
+                <div class="form-group col-half">
+                    <label for="ytSecret" class="form-label">YouTube Client Secret</label>
+                    <input type="password" id="ytSecret" name="youtube_client_secret" class="form-control" value="{{config.YouTubeClientSecret}}" placeholder="OAuth Client Secret">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-half">
+                    <label for="igAppId" class="form-label">Instagram App ID</label>
+                    <input type="text" id="igAppId" name="instagram_app_id" class="form-control" value="{{config.InstagramAppID}}">
+                </div>
+                <div class="form-group col-half">
+                    <label for="igSecret" class="form-label">Instagram App Secret</label>
+                    <input type="password" id="igSecret" name="instagram_app_secret" class="form-control" value="{{config.InstagramAppSecret}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+            <div id="settingsAlert" class="alert hidden"></div>
+        </div>
+    </form>
+</section>

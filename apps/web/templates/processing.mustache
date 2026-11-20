@@ -1,0 +1,141 @@
+<section class="card processing-card" data-job-id="{{job.ID}}">
+    <!-- Top Header -->
+    <div class="processing-header">
+        <div class="header-title-group">
+            <h2>Processing Pipeline</h2>
+            <div class="meta-badges">
+                <span class="job-id-tag">Job ID: <code>{{job.ID}}</code></span>
+                <span class="badge badge-personal" id="headerStatusBadge">{{job.Status}}</span>
+            </div>
+        </div>
+        <div class="header-action">
+            <button id="cancelJobBtn" class="btn btn-outline-danger">Cancel Job</button>
+            <a href="/create" id="retryJobBtn" class="btn btn-primary hidden">Try Another Video</a>
+        </div>
+    </div>
+
+    <!-- Error Alert Banner (Hidden by default) -->
+    <div id="jobErrorBanner" class="alert alert-danger hidden">
+        <h4 id="jobErrorCode" style="font-weight: 700; margin-bottom: 0.25rem;">Job Failed</h4>
+        <p id="jobErrorMessage" style="margin: 0;"></p>
+        <div style="margin-top: 0.75rem;">
+            <a href="/create" class="btn btn-sm btn-outline-danger" style="background: white;">Return to Create</a>
+        </div>
+    </div>
+
+    <!-- Top: Overall Progress Section -->
+    <div class="progress-section">
+        <div class="progress-meta">
+            <div class="stage-info">
+                <span class="stage-label" id="currentStageText">{{job.CurrentStage}}</span>
+            </div>
+            <div class="progress-percent-wrapper">
+                <span class="progress-percent" id="currentPercentText">{{job.Progress}}%</span>
+            </div>
+        </div>
+        <div class="progress-bar-wrapper">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: {{job.Progress}}%;"></div>
+        </div>
+    </div>
+
+    <!-- Main Two-Column Split Workspace (Left: 17 Steps, Right: Live Logs) -->
+    <div class="pipeline-workspace">
+        <!-- Left Side: All 17 Step Cards -->
+        <div class="pipeline-steps-col">
+            <div class="col-header">
+                <h3>Pipeline Stages</h3>
+                <span class="steps-count">17 Steps</span>
+            </div>
+            <div class="stages-vertical-list" id="stagesList">
+                <div class="stage-item" data-stage="Validating URL">
+                    <span class="stage-num">1</span>
+                    <span class="stage-name">Validating URL</span>
+                </div>
+                <div class="stage-item" data-stage="Downloading">
+                    <span class="stage-num">2</span>
+                    <span class="stage-name">Downloading (1080p Stream)</span>
+                </div>
+                <div class="stage-item" data-stage="Extracting audio">
+                    <span class="stage-num">3</span>
+                    <span class="stage-name">Extracting 16kHz Audio</span>
+                </div>
+                <div class="stage-item" data-stage="Creating analysis proxy">
+                    <span class="stage-num">4</span>
+                    <span class="stage-name">Creating 640x360 Proxy</span>
+                </div>
+                <div class="stage-item" data-stage="Transcribing">
+                    <span class="stage-num">5</span>
+                    <span class="stage-name">Transcribing (Whisper)</span>
+                </div>
+                <div class="stage-item" data-stage="Detecting scenes">
+                    <span class="stage-num">6</span>
+                    <span class="stage-name">Detecting Scene Cuts</span>
+                </div>
+                <div class="stage-item" data-stage="Analyzing audio">
+                    <span class="stage-num">7</span>
+                    <span class="stage-name">Analyzing Energy & Peaks</span>
+                </div>
+                <div class="stage-item" data-stage="Generating candidates">
+                    <span class="stage-num">8</span>
+                    <span class="stage-name">Generating Candidates</span>
+                </div>
+                <div class="stage-item" data-stage="AI ranking">
+                    <span class="stage-num">9</span>
+                    <span class="stage-name">AI Ranking (Gemini)</span>
+                </div>
+                <div class="stage-item" data-stage="Detecting subjects">
+                    <span class="stage-num">10</span>
+                    <span class="stage-name">Detecting Subjects (YOLO)</span>
+                </div>
+                <div class="stage-item" data-stage="Tracking subject">
+                    <span class="stage-num">11</span>
+                    <span class="stage-name">Tracking Subject (ByteTrack)</span>
+                </div>
+                <div class="stage-item" data-stage="Smart reframing">
+                    <span class="stage-num">12</span>
+                    <span class="stage-name">Smart 9:16 Reframing</span>
+                </div>
+                <div class="stage-item" data-stage="Generating captions">
+                    <span class="stage-num">13</span>
+                    <span class="stage-name">Generating ASS Captions</span>
+                </div>
+                <div class="stage-item" data-stage="Rendering">
+                    <span class="stage-num">14</span>
+                    <span class="stage-name">FFmpeg 1080x1920 Render</span>
+                </div>
+                <div class="stage-item" data-stage="Uploading">
+                    <span class="stage-num">15</span>
+                    <span class="stage-name">Publishing (Shorts / Reels)</span>
+                </div>
+                <div class="stage-item" data-stage="Cleanup">
+                    <span class="stage-num">16</span>
+                    <span class="stage-name">Cleaning Temp Storage</span>
+                </div>
+                <div class="stage-item" data-stage="Completed">
+                    <span class="stage-num">17</span>
+                    <span class="stage-name">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Live Logs Streaming & Copy Option -->
+        <div class="pipeline-logs-col">
+            <div class="col-header logs-header">
+                <div class="logs-title-group">
+                    <h3>Live Stream Console</h3>
+                    <span class="live-dot" id="sseStatusDot">● SSE Live</span>
+                </div>
+                <div class="logs-actions">
+                    <button id="copyLogsBtn" class="btn btn-sm btn-outline" title="Copy all logs to clipboard">
+                        📋 Copy Logs
+                    </button>
+                    <button id="clearLogsBtn" class="btn btn-sm btn-outline" title="Clear console view">
+                        Clear
+                    </button>
+                </div>
+            </div>
+            <pre class="terminal-logs" id="terminalLogs"><code id="logsContent">[INFO] [job={{job.ID}}] Connecting to Server-Sent Events stream...
+</code></pre>
+        </div>
+    </div>
+</section>

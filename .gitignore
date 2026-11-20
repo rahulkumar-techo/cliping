@@ -1,0 +1,31 @@
+# Environment
+.env
+*.env.local
+
+# Databases & Storage
+data/*.db
+data/*.db-wal
+data/*.db-shm
+storage/jobs/*
+!storage/jobs/.gitkeep
+
+# Go builds
+api_server
+api_server.exe
+apps/api/api_server
+apps/api/api_server.exe
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+apps/worker/venv/
+venv/
+.pytest_cache/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

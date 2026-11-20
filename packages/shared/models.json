@@ -1,0 +1,43 @@
+{
+  "target_specs": {
+    "cpu_cores": 4,
+    "ram_gb": 8,
+    "disk_gb": 32
+  },
+  "constraints": {
+    "max_concurrent_video_jobs": 1,
+    "min_free_disk_gb": 8,
+    "max_temp_storage_gb": 20,
+    "max_source_video_mb": 2048,
+    "max_source_duration_minutes": 120,
+    "job_ttl_hours": 12
+  },
+  "models": {
+    "whisper": {
+      "default": "base",
+      "recommended_options": ["tiny", "base", "small"],
+      "compute_type": "int8",
+      "device": "cpu"
+    },
+    "yolo": {
+      "default": "yolov8n.pt",
+      "classes": [0],
+      "inference_fps": 2.0
+    },
+    "gemini": {
+      "default": "gemini-2.5-flash",
+      "fallback": "local_heuristics"
+    }
+  },
+  "resolutions": {
+    "proxy": {
+      "width": 640,
+      "height": 360
+    },
+    "output_vertical": {
+      "width": 1080,
+      "height": 1920,
+      "aspect_ratio": "9:16"
+    }
+  }
+}

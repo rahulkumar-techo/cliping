@@ -1,0 +1,140 @@
+<section class="card form-card">
+    <div class="card-header">
+        <h2>Generate Mobile Shorts & Reels</h2>
+        <p class="subtitle">Extract the most engaging moments, auto-track subjects to 9:16, add synced subtitles, and render final clips.</p>
+    </div>
+
+    <form id="createJobForm" class="create-form">
+        <div class="form-group">
+            <label for="youtubeUrl" class="form-label">
+                YouTube URL <span class="required">*</span>
+            </label>
+            <div class="input-prefix-wrapper">
+                <span class="input-icon">▶</span>
+                <input 
+                    type="url" 
+                    id="youtubeUrl" 
+                    name="youtube_url" 
+                    class="form-control" 
+                    placeholder="https://www.youtube.com/watch?v=..." 
+                    required 
+                    autocomplete="off"
+                >
+            </div>
+            <span class="field-help" id="urlHelp">Paste any YouTube video link. Videos up to 120 minutes are supported.</span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-half">
+                <label for="clipDuration" class="form-label">Target Clip Duration</label>
+                <select id="clipDuration" name="clip_duration" class="form-control">
+                    <option value="15">15 seconds (Quick Bite)</option>
+                    <option value="30" selected>30 seconds (Standard Short)</option>
+                    <option value="45">45 seconds (Story Beat)</option>
+                    <option value="60">60 seconds (Full Length Reel)</option>
+                    <option value="custom">Custom Duration...</option>
+                </select>
+                <input type="number" id="customDuration" name="custom_duration" class="form-control hidden mt-2" placeholder="Seconds (10-90)" min="10" max="90">
+            </div>
+
+            <div class="form-group col-half">
+                <label for="clipCount" class="form-label">Number of Clips</label>
+                <select id="clipCount" name="clip_count" class="form-control">
+                    <option value="1">1 Best Clip</option>
+                    <option value="2">2 Clips</option>
+                    <option value="3" selected>3 Clips (Recommended)</option>
+                    <option value="5">5 Clips (Maximum)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Target Format & Aspect Ratio</label>
+            <div class="radio-pill-group">
+                <label class="radio-pill active">
+                    <input type="radio" name="aspect_ratio" value="9:16" checked>
+                    <span>📱 9:16 Mobile Vertical (1080x1920)</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="toggles-grid">
+            <div class="toggle-card">
+                <div class="toggle-info">
+                    <span class="toggle-title">Smart Subject Tracking</span>
+                    <span class="toggle-desc">Detect main speaker/subject with YOLO & ByteTrack and smoothly center-reframe</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="smartTracking" name="smart_tracking" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-info">
+                    <span class="toggle-title">Captions / Subtitles <span class="badge" style="background: var(--bg-tertiary); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border-color); color: var(--accent-blue);">Optional</span></span>
+                    <span class="toggle-desc">Burn mobile safe-margin subtitles onto video. Turn OFF for clean video without captions.</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="autoCaptions" name="auto_captions" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-info">
+                    <span class="toggle-title">Audio Sync & Boundary Alignment</span>
+                    <span class="toggle-desc">Snap clip cuts to natural sentence pauses to avoid cutting off words</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="audioSync" name="audio_sync" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="toggle-card">
+                <div class="toggle-info">
+                    <span class="toggle-title">AI Semantic Ranking (Gemini)</span>
+                    <span class="toggle-desc">Use Gemini to evaluate hook, payoff, and virality potential (with local fallback)</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="aiRanking" name="ai_ranking" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="publishing-box">
+            <div class="toggle-card no-border">
+                <div class="toggle-info">
+                    <span class="toggle-title">Auto Publish (Optional)</span>
+                    <span class="toggle-desc">Automatically upload when rendering finishes, then clean up temp files</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="autoPublishToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="publishingTargets" class="hidden publishing-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="publish_target" value="youtube">
+                    <span>YouTube Shorts</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="publish_target" value="instagram">
+                    <span>Instagram Reels</span>
+                </label>
+                <p class="small-hint">Ensure API credentials are set in Settings. Files will be purged once uploaded.</p>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-large">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-text">Generate Clips</span>
+            </button>
+            <div id="formError" class="alert alert-danger hidden"></div>
+        </div>
+    </form>
+</section>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - ClipCraft AI</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✂️</text></svg>">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <a href="/create" class="brand">
+                <span class="brand-icon">⚡</span>
+                <span class="brand-name">ClipCraft <span>AI</span></span>
+                <span class="badge badge-personal">Personal VPS Edition</span>
+            </a>
+            
+            <div class="system-stats" id="sysStats">
+                <div class="stat-pill">
+                    <span class="stat-label">Active Job:</span>
+                    <span class="stat-value" id="statActiveJob">{{#has_active_job}}<a href="/jobs/{{active_job_id}}">{{active_job_id}}</a>{{/has_active_job}}{{^has_active_job}}Idle{{/has_active_job}}</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-label">Queue:</span>
+                    <span class="stat-value" id="statQueue">{{queue_length}}</span>
+                </div>
+                <div class="stat-pill" title="RAM used by API runtime">
+                    <span class="stat-label">RAM:</span>
+                    <span class="stat-value" id="statRAM">-- MB</span>
+                </div>
+                <div class="stat-pill" title="Target specs: 4 Cores, 8GB RAM, 32GB Disk">
+                    <span class="stat-label">Target:</span>
+                    <span class="stat-value">4C / 8G</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a href="/create" class="nav-item">Create Clip</a>
+                <a href="/settings" class="nav-item">Settings</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {{{content}}}
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>Personal YouTube to Shorts & Reels Studio &bull; Low Resource Engine &bull; Max Concurrent Jobs: 1</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

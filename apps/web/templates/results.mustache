@@ -1,0 +1,71 @@
+<section class="results-container" data-job-id="{{job.ID}}">
+    <div class="results-header">
+        <div>
+            <h2>Generated Shorts & Reels</h2>
+            <p class="subtitle">Job ID: <code>{{job.ID}}</code> &bull; Source: <a href="{{job.YouTubeURL}}" target="_blank" rel="noopener">{{job.YouTubeURL}}</a></p>
+        </div>
+        <div>
+            <a href="/create" class="btn btn-primary">+ Create New Job</a>
+        </div>
+    </div>
+
+    {{#has_clips}}
+    <div class="clips-grid">
+        {{#clips}}
+        <div class="clip-card" id="clipCard-{{ID}}">
+            <div class="clip-video-wrapper">
+                <video controls playsinline preload="metadata" class="clip-video" poster="{{ThumbnailPath}}">
+                    <source src="/api/clips/{{ID}}/stream" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
+                <div class="score-badge" title="AI Combined Score">
+                    <span>★ {{FinalScore}}%</span>
+                </div>
+            </div>
+
+            <div class="clip-body">
+                <div class="clip-meta">
+                    <span class="meta-tag">Clip #{{ClipIndex}}</span>
+                    <span class="meta-tag">⏱ {{Duration}}s</span>
+                    <span class="meta-tag">[{{StartTime}}s – {{EndTime}}s]</span>
+                </div>
+
+                {{#Reason}}
+                <div class="clip-reason">
+                    <strong>AI Selection Reason:</strong>
+                    <p>{{Reason}}</p>
+                </div>
+                {{/Reason}}
+
+                <div class="clip-scores-detail">
+                    <span>Local Score: <strong>{{LocalScore}}</strong></span>
+                    <span>Gemini Score: <strong>{{GeminiScore}}</strong></span>
+                    <span>Status: <strong class="badge-status {{UploadStatus}}">{{UploadStatus}}</strong></span>
+                </div>
+
+                <div class="clip-actions">
+                    <a href="/api/clips/{{ID}}/download" class="btn btn-sm btn-outline" download>
+                        ⬇ Download
+                    </a>
+                    <button class="btn btn-sm btn-youtube" onclick="publishClip('{{ID}}', 'youtube')">
+                        ▶ Publish Shorts
+                    </button>
+                    <button class="btn btn-sm btn-instagram" onclick="publishClip('{{ID}}', 'instagram')">
+                        📷 Publish Reel
+                    </button>
+                </div>
+            </div>
+        </div>
+        {{/clips}}
+    </div>
+    {{/has_clips}}
+
+    {{^has_clips}}
+    <div class="empty-state card">
+        <div class="empty-icon">🎬</div>
+        <h3>No clips generated</h3>
+        <p>This job did not output any completed video clips or the job failed during processing.</p>
+        <a href="/create" class="btn btn-primary mt-3">Try Another Video</a>
+    </div>
+    {{/has_clips}}
+</section>
