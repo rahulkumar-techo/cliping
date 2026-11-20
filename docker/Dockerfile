@@ -21,6 +21,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+# Install lightweight CPU-only PyTorch (saves ~3.5 GB of heavy NVIDIA CUDA bloat)
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
 # Copy Python worker requirements and install
 COPY apps/worker/requirements.txt ./apps/worker/
 RUN pip install --no-cache-dir -r apps/worker/requirements.txt

@@ -12,11 +12,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"sync"
-	"syscall"
 	"time"
-	"unsafe"
 
 	"clipping-api/internal/cleanup"
 	"clipping-api/internal/config"
@@ -345,43 +342,4 @@ func mapStageToStatus(stage string) string {
 	default:
 		return "ANALYZING"
 	}
-}
-
-// getFreeDiskSpaceGB returns available disk space on the drive of the given path.
-func getFreeDiskSpaceGB(path string) (float64, error) {
-	if runtime.GOOS == "windows" {
-		// Windows disk query
-		kernel32 := syscall.NewLazyDLL("kernel32.dll")
-		getDiskFreeSpaceEx := kernel32.NewProc("GetDiskFreeSpaceExW")
-
-		var freeBytes, totalBytes, totalFreeBytes int64
-		p, err := syscall.UTF16PtrFromString(path)
-		if err != nil {
-			return 50.0, nil
-		}
-
-		r, _, err := getDiskFreeSpaceEx.Call(
-			uintptr(unsafe.Pointer(p)),
-			uintptr(unsafe.Pointer(&freeBytes)),
-			uintptr(unsafe.Pointer(&totalBytes)),
-			uintptr(unsafe.Pointer(&totalFreeBytes)),
-		)
-		if r == 0 {
-			// Fallback if path doesn't exist yet: check root volume
-			root, _ := syscall.UTF16PtrFromString(filepath.VolumeName(path) + "\\")
-			r, _, err = getDiskFreeSpaceEx.Call(
-				uintptr(unsafe.Pointer(root)),
-				uintptr(unsafe.Pointer(&freeBytes)),
-				uintptr(unsafe.Pointer(&totalBytes)),
-				uintptr(unsafe.Pointer(&totalFreeBytes)),
-			)
-			if r == 0 {
-				return 32.0, nil // Default safe assumption on failure
-			}
-		}
-		return float64(freeBytes) / (1024 * 1024 * 1024), nil
-	}
-
-	// Linux / Unix fallback
-	return 20.0, nil
 }
